@@ -321,6 +321,8 @@
   .elsewhere .k { font-size: 14px; color: var(--muted); }
   .elsewhere .acts { display: flex; flex-wrap: wrap; gap: 10px; }
   .elsewhere .hint { font-size: 14px; color: var(--muted); margin: 0; }
+  .elsewhere .wx { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
+  .wxqr { width: 104px; height: 104px; flex: none; border-radius: 4px; background: #fff; padding: 4px; border: 1px solid var(--rule); display: block; }
   .join { display: flex; flex-wrap: wrap; gap: 20px 24px; align-items: center; }
   .qr { background: #fff; padding: 10px; border-radius: 4px; width: 148px; height: 148px; flex: none; border: 1px solid var(--rule); }
   .qr img, .qr canvas { display: block; width: 128px; height: 128px; }
@@ -554,9 +556,12 @@
           <p class="k">Danni also writes here</p>
           <div class="acts">
             <a class="btn quiet" href="https://xhslink.cn/m/PMaFTbeklz" target="_blank" rel="noopener">小红书 Xiaohongshu</a>
-            <button type="button" class="btn quiet" id="copy-mp" data-name="透明思考">公众号 透明思考</button>
+            <a class="btn quiet" href="https://weixin.qq.com/r/mp/NTlNVXHEtSzKrTU292wn" target="_blank" rel="noopener">公众号 透明思考</a>
           </div>
-          <p class="hint" id="mp-hint">WeChat official account: search 透明思考 in WeChat, or tap the name to copy it.</p>
+          <div class="wx">
+            <img class="wxqr" src="photos/wechat-qr.jpg" alt="QR code for the WeChat official account 透明思考" width="430" height="430" loading="lazy">
+            <p class="hint">WeChat official account 透明思考. Scan with WeChat, or open the link from inside WeChat.</p>
+          </div>
         </div>
       </div>
       <div class="glass join">
@@ -644,21 +649,6 @@
         setTimeout(function () { copy.textContent = 'Copy message'; }, 2000);
       }, fallback);
     } else { fallback(); }
-  });
-
-  var mp = document.getElementById('copy-mp');
-  var mpHint = document.getElementById('mp-hint');
-  mp.addEventListener('click', function () {
-    var nm = mp.getAttribute('data-name');
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(nm).then(function () {
-        mpHint.textContent = 'Copied 透明思考. Paste it into WeChat search to follow.';
-      }, function () {
-        mpHint.textContent = 'Search 透明思考 in WeChat to follow.';
-      });
-    } else {
-      mpHint.textContent = 'Search 透明思考 in WeChat to follow.';
-    }
   });
 
   var links = document.querySelectorAll('[data-takeaway]');
