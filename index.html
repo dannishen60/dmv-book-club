@@ -272,6 +272,11 @@
     min-width: 0;
   }
   .shelfgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  /* Up next: one wide horizontal card per row, cover on the left. */
+  .shelfgrid.stack { grid-template-columns: minmax(0, 1fr); max-width: 820px; gap: 18px; }
+  .shelfgrid.stack .card { padding: 22px 24px; gap: 8px 26px; }
+  .shelfgrid.stack .cover { width: 104px; }
+  .shelfgrid.stack .card .note { max-width: 62ch; }
 
   .empty {
     display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px;
@@ -471,7 +476,7 @@
   <div class="inner">
     <h2 id="next-h">Up next</h2>
     <p class="lede">The next book is decided together in the group. Anyone can put a title forward. Three are on the table so far.</p>
-    <div class="shelfgrid">
+    <div class="shelfgrid stack">
       <article class="card">
         <img class="cover" src="covers/four-thousand-weeks.jpg" alt="Cover of Four Thousand Weeks" width="326" height="500" loading="lazy">
         <div class="card-head">
@@ -503,7 +508,7 @@
         <p class="cardmeta">Suggested by Jane</p>
       </article>
     </div>
-    <div class="empty" style="margin-top:20px">
+    <div class="empty" style="margin-top:20px;max-width:820px">
       <img class="bloom" src="photos/renoir-roses-detail.jpg" alt="" width="600" height="600" loading="lazy">
       <p>Have another title in mind? Suggest it below and bring it up on Tuesday. We vote in the group.</p>
     </div>
