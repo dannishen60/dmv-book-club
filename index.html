@@ -503,7 +503,7 @@
 <section id="suggest" aria-labelledby="suggest-h" style="padding-top:0">
   <div class="inner">
     <h2 id="suggest-h">Suggest a book or share a takeaway</h2>
-    <p class="lede">Fill this in and copy the message into the WhatsApp group. Danni updates this page from what the group posts.</p>
+    <p class="lede">Fill this in and send it. Danni gets it by email and adds it to the page. You can also copy the message and post it in the WhatsApp group.</p>
     <div class="suggest">
       <form id="form" autocomplete="off">
         <label for="kind">What are you sending
@@ -527,7 +527,8 @@
           <input id="name" name="name" type="text" placeholder="Optional">
         </label>
         <div>
-          <button type="submit" class="btn quiet">Build the message</button>
+          <button type="submit" class="btn" id="send">Send to Danni</button>
+          <input type="checkbox" name="botcheck" id="botcheck" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
         </div>
       </form>
       <div class="preview" aria-live="polite">
@@ -660,12 +661,51 @@
     return lines.join('\n');
   }
 
+  // Suggestions are emailed to Danni through Web3Forms. The key is public by design.
+  var ACCESS_KEY = 'PASTE_WEB3FORMS_KEY_HERE';
+  var send = document.getElementById('send');
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!title.value.trim()) { title.focus(); return; }
-    out.textContent = build();
+    var message = build();
+    out.textContent = message;
     copy.disabled = false;
-    status.textContent = 'Copy it, then paste it in the group.';
+    if (document.getElementById('botcheck').checked) return;
+    if (ACCESS_KEY.indexOf('PASTE_') === 0 || !window.fetch) {
+      status.textContent = 'Copy the message and paste it in the WhatsApp group.';
+      return;
+    }
+    send.disabled = true;
+    status.textContent = 'Sending…';
+    var payload = {
+      access_key: ACCESS_KEY,
+      subject: (kind.value === 'takeaway' ? 'Book club takeaway: ' : 'Book club suggestion: ') + title.value.trim(),
+      from_name: name.value.trim() || 'A book club member',
+      kind: kind.value === 'takeaway' ? 'Takeaway' : 'Suggestion',
+      title: title.value.trim(),
+      author: author.value.trim(),
+      reason: why.value.trim(),
+      name: name.value.trim(),
+      message: message
+    };
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).then(function (res) {
+      send.disabled = false;
+      if (res && res.success) {
+        status.textContent = 'Sent to Danni. You can also copy the message and post it in the group.';
+        send.textContent = 'Sent';
+        setTimeout(function () { send.textContent = 'Send to Danni'; }, 3000);
+      } else {
+        status.textContent = 'Sending failed. Copy the message and paste it in the WhatsApp group instead.';
+      }
+    }).catch(function () {
+      send.disabled = false;
+      status.textContent = 'Sending failed. Copy the message and paste it in the WhatsApp group instead.';
+    });
   });
 
   copy.addEventListener('click', function () {
